@@ -21,7 +21,10 @@ class Packet:
         return self._map[item]
 
     def date(self, date_time_key):
-        return datetime.strptime(self._map[date_time_key], '%Y-%m-%dT%H:%M:%SZ')
+        try:
+            return datetime.strptime(self._map[date_time_key], '%Y-%m-%dT%H:%M:%SZ')
+        except(ValueError):
+            raise PacketError('Key <{0}> is not in UTC date format'.format(date_time_key))
 
     def is_missing(self, key):
         return key not in self._map or self._map[key] is None or self._map[key] == "" or self._map[key] == []

@@ -52,3 +52,7 @@ class TestPacket:
             Packet('{')
         with pytest.raises(PacketError):
             Packet('')
+
+    def test_extraction_problem(self):
+        with pytest.raises(PacketError):
+            self._packet.date('string_key')
