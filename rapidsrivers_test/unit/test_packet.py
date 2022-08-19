@@ -44,10 +44,10 @@ class TestPacket:
 
     def test_is_missing(self):
         _packet = Packet(self._jsonString)
-        assert _packet.is_missing('foo')
-        assert _packet.is_missing('empty')
-        assert _packet.is_missing('null_key')
-        assert _packet.is_missing('empty_list_key')
+        assert _packet.is_lacking('foo')
+        assert _packet.is_lacking('empty')
+        assert _packet.is_lacking('null_key')
+        assert _packet.is_lacking('empty_list_key')
 
     def test_invalid_json(self):
         with pytest.raises(PacketError):

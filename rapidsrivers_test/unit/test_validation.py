@@ -38,6 +38,9 @@ class TestValidation:
         self._assert_fails(Rules(require_keys('string_key', 'foo')))
         self._assert_passes(Rules(require_keys('detail_key')))
 
+    def test_forbidden_key(self):
+        self._assert_passes(Rules(forbid_keys('foo')))
+
     def _assert_passes(self, rules):
         status = Packet(self._jsonString).evaluate(rules)
         assert not status.has_errors()

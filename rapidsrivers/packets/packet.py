@@ -27,11 +27,11 @@ class Packet:
         except(ValueError):
             raise PacketError('Key <{0}> is not in UTC date format'.format(date_time_key))
 
-    def is_missing(self, key):
+    def is_lacking(self, key):
         return key not in self._map or self._map[key] is None or self._map[key] == "" or self._map[key] == []
 
     def has(self, key):
-        return not self.is_missing(key)
+        return not self.is_lacking(key)
 
     def evaluate(self, rules):
         status = Status(self._json_string)
