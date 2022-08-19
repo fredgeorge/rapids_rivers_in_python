@@ -36,3 +36,5 @@ class TestPacket:
         assert 7.5 == self._packet['double_key']
         assert self._packet['boolean_key']
         assert datetime(2022, 3, 3) == self._packet.date('date_time_key')
+        assert 'upgrade' == self._packet['detail_key']['detail_string_key']
+        assert 10.75 == self._packet['detail_key']['detail_double_key']
