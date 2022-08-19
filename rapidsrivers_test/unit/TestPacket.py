@@ -3,7 +3,7 @@
 # Licensed under the MIT License; see LICENSE file in root.
 
 import pytest
-
+from _datetime import datetime
 from rapidsrivers.packet.packet import Packet
 
 
@@ -31,3 +31,8 @@ class TestPacket:
 
     def test_fetch_nugget(self):
         assert 'rental_offer_engine' == self._packet['string_key']
+        assert 7 == self._packet['integer_key']
+        assert 7.0 == self._packet['integer_key']
+        assert 7.5 == self._packet['double_key']
+        assert self._packet['boolean_key']
+        assert datetime(2022, 3, 3) == self._packet.date('date_time_key')
