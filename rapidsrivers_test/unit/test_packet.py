@@ -38,3 +38,9 @@ class TestPacket:
         assert datetime(2022, 3, 3) == self._packet.date('date_time_key')
         assert 'upgrade' == self._packet['detail_key']['detail_string_key']
         assert 10.75 == self._packet['detail_key']['detail_double_key']
+
+    def test_is_missing(self):
+        assert self._packet.is_missing('foo')
+        assert self._packet.is_missing('empty')
+        assert self._packet.is_missing('null_key')
+        assert self._packet.is_missing('empty_list_key')
