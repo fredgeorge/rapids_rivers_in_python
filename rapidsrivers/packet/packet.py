@@ -4,6 +4,8 @@
 
 import json
 from datetime import datetime
+from json import JSONDecodeError
+
 from rapidsrivers.packet.errors import PacketError
 
 
@@ -12,7 +14,7 @@ class Packet:
         self._json_string = raw_json_string
         try:
             self._map = json.loads(raw_json_string)
-        except RuntimeError:
+        except JSONDecodeError:
             raise PacketError('message')
 
     def __getitem__(self, item):

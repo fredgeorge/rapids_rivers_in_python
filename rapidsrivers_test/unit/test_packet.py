@@ -4,6 +4,8 @@
 
 import pytest
 from _datetime import datetime
+
+from rapidsrivers.packet.errors import PacketError
 from rapidsrivers.packet.packet import Packet
 
 
@@ -44,3 +46,9 @@ class TestPacket:
         assert self._packet.is_missing('empty')
         assert self._packet.is_missing('null_key')
         assert self._packet.is_missing('empty_list_key')
+
+    def test_invalid_json(self):
+        with pytest.raises(PacketError):
+            Packet('{')
+        with pytest.raises(PacketError):
+            Packet('')
