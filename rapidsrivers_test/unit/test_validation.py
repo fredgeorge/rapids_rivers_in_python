@@ -6,7 +6,7 @@ import pytest
 
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
-from rapidsrivers.validation.validations import require_keys, forbid_keys
+from rapidsrivers.validation.validations import require_keys, forbid_keys, require_value
 
 
 class TestValidation:
@@ -42,6 +42,25 @@ class TestValidation:
         self._assert_passes(Rules(forbid_keys('foo')))
         self._assert_fails(Rules(forbid_keys('string_key', 'foo')))
         self._assert_passes(Rules(forbid_keys('null_key', 'empty_string', 'empty_list_key')))
+
+    def test_require_specific_string(self):
+        self._assert_passes(Rules(require_value('string_key', 'rental_offer_engine')))
+        self._assert_fails(Rules(require_value('string_key', 'foo')))
+        self._assert_fails(Rules(require_value('bar', 'foo')))
+
+    def test_require_specific_number(self):
+        self._assert_passes(Rules(require_value('integer_key', 7)))
+        self._assert_passes(Rules(require_value('integer_key', 7.0)))
+        self._assert_fails(Rules(require_value('integer_key', 8)))
+        self._assert_passes(Rules(require_value('double_key', 7.5)))
+        self._assert_fails(Rules(require_value('double_key', 8)))
+
+    def test_require_specific_boolean(self):
+        self._assert_passes(Rules(require_value('boolean_key', True)))
+        self._assert_fails(Rules(require_value('boolean_key', False)))
+        self._assert_fails(Rules(require_value('boolean_string_key', 'true')))
+        self._assert_passes(Rules(require_value('boolean_string_key', 'false')))
+        self._assert_fails(Rules(require_value('boolean_string_key', False))) # must use quoted value
 
     def _assert_passes(self, rules):
         status = Packet(self._jsonString).evaluate(rules)

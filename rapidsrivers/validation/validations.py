@@ -30,3 +30,22 @@ class _ForbidKey:
             status.missing_expected(self._key)
         else:
             status.unexpectedly_found(self._key)
+
+
+def require_value(key, value):
+    return [_RequireValue(key, value)]
+
+
+class _RequireValue:
+    def __init__(self, key, value):
+        self._key = key
+        self._value = value
+
+    def _evaluate(self, packet, status):
+        if packet.is_lacking(self._key):
+            status.unexpectedly_missing(self._key)
+            return
+        if packet[self._key] == self._value:
+            status.found_value(self._key, self._value)
+        else:
+            status.missing_value(self._key, self._value)

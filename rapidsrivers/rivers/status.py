@@ -24,3 +24,9 @@ class Status:
 
     def missing_expected(self, key):
         self._information_messages.append('Forbidden key of <{0}> was not found'.format(key))
+
+    def missing_value(self, key, value):
+        self._error_messages.append('Required key of <{0}> is missing required value of <{1}>'.format(key, value))
+
+    def found_value(self, key, value):
+        self._information_messages.append('Require key <{0}> has value <{1}>'.format(key, value))
