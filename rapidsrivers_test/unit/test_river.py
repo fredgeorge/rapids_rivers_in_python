@@ -3,6 +3,7 @@
 # Licensed under the MIT License; see LICENSE file in root.
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
+from rapidsrivers.validation.validations import require_keys, forbid_keys
 from rapidsrivers_test.util.sample_rapids_connection import SampleRapidsConnection
 from rapidsrivers_test.util.sample_services import SampleService
 
@@ -31,10 +32,26 @@ class TestRiver:
         service = SampleService(Rules())
         connection.register(service)
         connection.publish(packet)
-        assert len(connection.all_packets) == 2  # StartUp and first packet
         assert len(service.accepted_packets) == 1
         assert len(service.information_statuses) == 1
         assert len(service.rejected_packets) == 0
         assert len(service.problem_statuses) == 0
 
+    def test_filtered_service(self):
+        connection = SampleRapidsConnection(2)
+        packet = Packet(self._json_string)
+        accepted_service = SampleService(Rules(require_keys('integer_key')))
+        rejected_service = SampleService(Rules(forbid_keys('integer_key')))
+        connection.register(accepted_service)
+        connection.register(rejected_service)
+        connection.publish(packet)
+        assert len(accepted_service.accepted_packets) == 1
+        assert accepted_service.information_statuses[0].has_errors() is False
+        assert len(rejected_service.rejected_packets) == 1
+        assert rejected_service.problem_statuses[0].has_errors() is True
 
+    def test_start_up_packet(self):
+        connection = SampleRapidsConnection(2)
+        service = SampleService(Rules())
+        connection.register(service)
+        assert len(connection.all_packets) == 1
