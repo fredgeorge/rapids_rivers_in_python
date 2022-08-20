@@ -6,7 +6,7 @@ import pytest
 
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
-from rapidsrivers.validation.validations import require_keys
+from rapidsrivers.validation.validations import require_keys, forbid_keys
 
 
 class TestValidation:
@@ -40,6 +40,8 @@ class TestValidation:
 
     def test_forbidden_key(self):
         self._assert_passes(Rules(forbid_keys('foo')))
+        self._assert_fails(Rules(forbid_keys('string_key', 'foo')))
+        self._assert_passes(Rules(forbid_keys('null_key', 'empty_string', 'empty_list_key')))
 
     def _assert_passes(self, rules):
         status = Packet(self._jsonString).evaluate(rules)
