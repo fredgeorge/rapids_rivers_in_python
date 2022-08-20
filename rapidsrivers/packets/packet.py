@@ -38,3 +38,9 @@ class Packet:
         for rule in rules:
             rule._evaluate(self, status)
         return status
+
+    def to_json_string(self):
+        return json.dumps(self._map)
+
+    def __str__(self):
+        return self.to_json_string()
