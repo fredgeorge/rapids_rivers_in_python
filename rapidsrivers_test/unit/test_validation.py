@@ -62,6 +62,14 @@ class TestValidation:
         self._assert_passes(Rules(require_value('boolean_string_key', 'false')))
         self._assert_fails(Rules(require_value('boolean_string_key', False))) # must use quoted value
 
+    def test_compound_rules(self):
+        self._assert_passes(Rules(
+            require_keys('string_key', 'integer_key'),
+            require_value('boolean_key', True),
+            forbid_keys('null_key', 'empty_string', 'empty_list_key'),
+            require_keys('detail_key', 'boolean_string_key')
+        ))
+
     def _assert_passes(self, rules):
         status = Packet(self._jsonString).evaluate(rules)
         assert not status.has_errors()
