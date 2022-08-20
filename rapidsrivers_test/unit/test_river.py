@@ -1,7 +1,7 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
-
+from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
 from rapidsrivers_test.util.sample_rapids_connection import SampleRapidsConnection
 from rapidsrivers_test.util.sample_services import SampleService
@@ -27,6 +27,14 @@ class TestRiver:
 
     def test_unfiltered_service(self):
         connection = SampleRapidsConnection(2)
+        packet = Packet(self._json_string)
         service = SampleService(Rules())
         connection.register(service)
-        assert len(connection.all_packets) == 1
+        connection.publish(packet)
+        assert len(connection.all_packets) == 2  # StartUp and first packet
+        assert len(service.accepted_packets) == 1
+        assert len(service.information_statuses) == 1
+        assert len(service.rejected_packets) == 0
+        assert len(service.problem_statuses) == 0
+
+

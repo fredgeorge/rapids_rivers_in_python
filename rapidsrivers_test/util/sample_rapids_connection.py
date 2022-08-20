@@ -29,11 +29,12 @@ class SampleRapidsConnection:
         is_packet = hasattr(message_or_packet, 'to_json_string')
         if is_packet:
             self.all_packets.append(message_or_packet)
-        message = message_or_packet if not is_packet else message_or_packet.to_json_string
+        message = message_or_packet if not is_packet else message_or_packet.to_json_string()
         self.all_messages.append(message)
         if len(self._messages) > 0:
             self._messages.append(message)
         else:
+            self._messages.append(message)
             while len(self._messages) > 0:
                 next_message = self._messages[0]
                 for river in self._rivers:

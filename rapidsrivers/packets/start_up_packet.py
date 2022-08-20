@@ -12,7 +12,6 @@ class StartUpPacket:
     def __init__(self, service):
         self._service_name = service.name
 
-    @property
     def to_json_string(self):
         return json.dumps({
             COMMUNITY_KEY : SYSTEM_COMMUNITY_VALUE,
