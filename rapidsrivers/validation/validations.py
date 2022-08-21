@@ -10,7 +10,7 @@ class _RequireKey:
     def __init__(self, key):
         self._key = key
 
-    def _evaluate(self, packet, status):
+    def evaluate(self, packet, status):
         if packet.is_lacking(self._key):
             status.unexpectedly_missing(self._key)
         else:
@@ -25,7 +25,7 @@ class _ForbidKey:
     def __init__(self, key):
         self._key = key
 
-    def _evaluate(self, packet, status):
+    def evaluate(self, packet, status):
         if packet.is_lacking(self._key):
             status.missing_expected(self._key)
         else:
@@ -41,7 +41,7 @@ class _RequireValue:
         self._key = key
         self._value = value
 
-    def _evaluate(self, packet, status):
+    def evaluate(self, packet, status):
         if packet.is_lacking(self._key):
             status.unexpectedly_missing(self._key)
             return

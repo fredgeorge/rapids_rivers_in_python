@@ -30,3 +30,19 @@ class Status:
 
     def found_value(self, key, value):
         self._information_messages.append('Require key <{0}> has value <{1}>'.format(key, value))
+
+    def __str__(self):
+        result = 'Status of filtering of:\n'
+        result += '\tOriginal packet: {0}\n'.format(self._json_string)
+        result += self._details('Errors', self._error_messages)
+        result += self._details('Informational messages', self._information_messages)
+        return result
+
+    @staticmethod
+    def _details(category, messages):
+        if len(messages) == 0:
+            return ''
+        result = '\t{0} - {1}:'.format(category, len(messages))
+        for m in messages:
+            result += '\t\t{0}\n'.format(m)
+        return result

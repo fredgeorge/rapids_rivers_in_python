@@ -24,7 +24,7 @@ class Packet:
     def date(self, date_time_key):
         try:
             return datetime.strptime(self._map[date_time_key], '%Y-%m-%dT%H:%M:%SZ')
-        except(ValueError):
+        except ValueError:
             raise PacketError('Key <{0}> is not in UTC date format'.format(date_time_key))
 
     def is_lacking(self, key):
@@ -36,7 +36,7 @@ class Packet:
     def evaluate(self, rules):
         status = Status(self._json_string)
         for rule in rules:
-            rule._evaluate(self, status)
+            rule.evaluate(self, status)
         return status
 
     def to_json_string(self):
