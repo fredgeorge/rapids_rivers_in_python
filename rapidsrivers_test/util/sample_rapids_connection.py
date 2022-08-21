@@ -1,7 +1,9 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
+
 from rapidsrivers.packets.errors import PacketError
+from rapidsrivers.rapids.validae_service import validate_service
 from rapidsrivers.rivers.river import River
 
 
@@ -15,12 +17,7 @@ class SampleRapidsConnection:
         self.all_messages = []
 
     def register(self, service):
-        if not hasattr(service, 'name'):
-            raise PacketError('Service does not have a required "name" attribute')
-        if not hasattr(service, 'rules'):
-            raise PacketError('Service does not have a required "rules" attribute')
-        if not hasattr(service, 'packet'):
-            raise PacketError('Service does not have a required "packet" method')
+        validate_service(service)
         river = River(self, service.rules, self._max_read_count)
         river.register(service)
         self._rivers.append(river)
