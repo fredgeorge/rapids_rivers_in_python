@@ -8,7 +8,7 @@ from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
 from rapidsrivers.validation.validations import require_keys, forbid_keys
 from rapidsrivers_test.util.sample_rapids_connection import SampleRapidsConnection
-from rapidsrivers_test.util.sample_services import SampleService, DeadService
+from rapidsrivers_test.util.sample_services import SampleService, DeadService, LinkedService
 
 
 class TestRiver:
@@ -109,3 +109,18 @@ class TestRiver:
         assert len(system_service.accepted_packets) == 2  # packet not forwarded to service
         assert len(system_service.loop_packets) == 1  # loop detected
         assert len(normal_service.loop_packets) == 0  # system error not detected by normal service
+
+    def test_bread_crumbs(self):
+        connection = SampleRapidsConnection(9)
+        packet = Packet.empty()
+        service_a = LinkedService([], ['a', 'b', 'c'])
+        service_b = LinkedService(['a'], ['b', 'c'])
+        service_c = LinkedService(['a', 'b'], ['c'])
+        service_d = LinkedService(['a', 'b', 'c'], [])
+        connection.register(service_a)
+        connection.register(service_b)
+        connection.register(service_c)
+        connection.register(service_d)
+        connection.publish(packet)
+        assert len(service_d.accepted_packets) == 1
+        assert len(service_d.accepted_packets[0][SYSTEM_BREADCRUMBS_KEY]) == 4

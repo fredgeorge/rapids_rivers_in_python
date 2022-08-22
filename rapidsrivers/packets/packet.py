@@ -20,6 +20,10 @@ class Packet:
         except JSONDecodeError:
             raise PacketError('message')
 
+    @staticmethod
+    def empty():
+        return Packet('{}')
+
     def __getitem__(self, item):
         return self._map[item]
 

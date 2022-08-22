@@ -2,6 +2,7 @@
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
 from rapidsrivers.validation.rules import Rules
+from rapidsrivers.validation.validations import require_keys, forbid_keys
 
 
 class SampleService:
@@ -41,4 +42,14 @@ class DeadService(SampleService):
     def is_still_alive(connection):
         return False
 
+class LinkedService(SampleService):
 
+    def __init__(self, required, forbidden):
+        super().__init__(Rules(require_keys(*required), forbid_keys(*forbidden)))
+        self._forbidden_keys = forbidden
+
+    def packet(self, connection, packet, information):
+        if len(self._forbidden_keys) != 0:
+            packet[self._forbidden_keys[0]] = True
+            connection.publish(packet)
+        super().packet(connection, packet, information)
