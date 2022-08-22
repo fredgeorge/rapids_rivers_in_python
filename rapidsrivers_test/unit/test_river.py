@@ -1,7 +1,8 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
-from rapidsrivers.packets import constants
+
+from rapidsrivers.packets.constants import *
 from rapidsrivers.packets.heart_beat_packet import HeartBeat
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
@@ -99,11 +100,11 @@ class TestRiver:
         connection.publish(packet)
         assert len(system_service.accepted_packets) == 1
 
-        packet[constants.SYSTEM_READ_COUNT_KEY] = 1
+        packet[SYSTEM_READ_COUNT_KEY] = 1
         connection.publish(packet)
         assert len(system_service.accepted_packets) == 2
 
-        packet[constants.SYSTEM_READ_COUNT_KEY] = 2
+        packet[SYSTEM_READ_COUNT_KEY] = 2
         connection.publish(packet)
         assert len(system_service.accepted_packets) == 2  # packet not forwarded to service
         assert len(system_service.loop_packets) == 1  # loop detected

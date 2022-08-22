@@ -1,6 +1,8 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
+
+from rapidsrivers.packets.constants import *
 from rapidsrivers.packets.errors import PacketError
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.packets.start_up_packet import StartUpPacket
@@ -41,7 +43,9 @@ class River:
 
     @staticmethod
     def _trigger_accepted_packet(listeners, connection, packet, status):
+        breadcrumbs = [] if packet.is_lacking(SYSTEM_BREADCRUMBS_KEY) else packet[SYSTEM_BREADCRUMBS_KEY]
         for service in listeners:
+            packet[SYSTEM_BREADCRUMBS_KEY] = breadcrumbs + [service.name]
             service.packet(connection, packet, status)
 
     @staticmethod

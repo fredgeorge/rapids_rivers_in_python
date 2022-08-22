@@ -5,7 +5,7 @@
 import json
 import time
 
-from rapidsrivers.packets import constants
+from rapidsrivers.packets.constants import COMMUNITY_KEY
 from rapidsrivers.packets.errors import PacketError
 from rapidsrivers.rapids.rabbit_mq_rapids_connection import RabbitMqRapidsConnection
 
@@ -23,7 +23,7 @@ class Need:
                               'and the Port number of the Rapids (int or string).')
         rapids_connection = RabbitMqRapidsConnection(args[0], args[1])
         need_packet = json.dumps({
-                    constants.COMMUNITY_KEY: Need.OFFER_ENGINE_COMMUNITY_VALUE,
+                    COMMUNITY_KEY: Need.OFFER_ENGINE_COMMUNITY_VALUE,
                     Need.NEED_KEY: Need.CAR_RENTAL_OFFER_NEED_VALUE
                 })
         while True:
@@ -33,6 +33,7 @@ class Need:
 
     def _need(self):
         return
+
 
 if __name__ == '__main__':
     Need.main('localhost', 5672)

@@ -9,6 +9,8 @@ SYSTEM_COMMUNITY_VALUE = "system"
 
 SYSTEM_READ_COUNT_KEY = "system_read_count"
 
+SYSTEM_BREADCRUMBS_KEY = "breadcrumbs"
+
 PACKET_TYPE_KEY = "packet_type"
 SYSTEM_PACKET_TYPE_VALUE = "system_packet"
 
