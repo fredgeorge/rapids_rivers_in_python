@@ -25,6 +25,9 @@ class River:
     def message(self, connection, message):
         try:
             packet = Packet(message)
+            if packet.has_invalid_read_count(self._max_read_count):
+                self._trigger_loop_detection(connection, packet)
+                return
             if packet.is_heart_beat():
                 self._trigger_heart_beat_response(connection, packet)
             status = packet.evaluate(self._rules)
@@ -58,3 +61,8 @@ class River:
         for service in self._listeners:
             if not hasattr(service, 'is_still_alive') or service.is_still_alive(connection) is True:
                 connection.publish(packet.to_heart_beat_response(service))
+
+    def _trigger_loop_detection(self, connection, packet):
+        for service in self._system_listeners:
+            if hasattr(service, 'loop_detected'):
+                service.loop_detected(connection, packet)

@@ -1,6 +1,7 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
+from rapidsrivers.packets import constants
 from rapidsrivers.packets.heart_beat_packet import HeartBeat
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
@@ -81,7 +82,29 @@ class TestRiver:
         connection.register(system_service)
         heart_beat = HeartBeat()
         connection.publish(heart_beat)
+        assert len(normal_service.accepted_packets) == 0  # Doesn't see system HeartBeat
         assert len(system_service.accepted_packets) == 3  # HeatBeat with only 2 responses
         connection.publish(heart_beat)
         connection.publish(heart_beat)
+        assert len(normal_service.accepted_packets) == 0
         assert len(system_service.accepted_packets) == 9  # 3 HeartBeat's with 2 responses each
+
+    def test_loop_detection(self):
+        connection = SampleRapidsConnection(2)
+        packet = Packet(self._json_string)
+        normal_service = SampleService(Rules(), is_system_service=False)
+        system_service = SampleService(Rules(), is_system_service=True)
+        connection.register(normal_service)
+        connection.register(system_service)
+        connection.publish(packet)
+        assert len(system_service.accepted_packets) == 1
+
+        packet[constants.SYSTEM_READ_COUNT_KEY] = 1
+        connection.publish(packet)
+        assert len(system_service.accepted_packets) == 2
+
+        packet[constants.SYSTEM_READ_COUNT_KEY] = 2
+        connection.publish(packet)
+        assert len(system_service.accepted_packets) == 2  # packet not forwarded to service
+        assert len(system_service.loop_packets) == 1  # loop detected
+        assert len(normal_service.loop_packets) == 0  # system error not detected by normal service

@@ -6,7 +6,7 @@ import json
 from datetime import datetime
 from json import JSONDecodeError
 
-from rapidsrivers.packets import constants
+from rapidsrivers.packets.constants import *
 from rapidsrivers.packets.errors import PacketError
 from rapidsrivers.packets.heart_beat_packet import HeartBeat
 from rapidsrivers.rivers.status import Status
@@ -39,16 +39,24 @@ class Packet:
         return not self.is_lacking(key)
 
     def is_system(self):
-        return self.has(constants.PACKET_TYPE_KEY) and \
-               self._map[constants.PACKET_TYPE_KEY] == constants.SYSTEM_PACKET_TYPE_VALUE
+        return self.has(PACKET_TYPE_KEY) and \
+               self._map[PACKET_TYPE_KEY] == SYSTEM_PACKET_TYPE_VALUE
 
     def is_heart_beat(self):
         return not self.evaluate(HeartBeat.rules()).has_errors()
 
     def to_heart_beat_response(self, service):
         response = Packet(self._json_string)  # clone the packet
-        response[constants.HEART_BEAT_RESPONDER_KEY] = service.name
+        response[HEART_BEAT_RESPONDER_KEY] = service.name
         return response
+
+    def has_invalid_read_count(self, max_read_count):
+        return max_read_count != 0 and self._system_read_count() > max_read_count
+
+    def _system_read_count(self):
+        result = 1 if self.is_lacking(SYSTEM_READ_COUNT_KEY) else self[SYSTEM_READ_COUNT_KEY] + 1
+        self[SYSTEM_READ_COUNT_KEY] = result
+        return result
 
     def evaluate(self, rules):
         status = Status(self._json_string)

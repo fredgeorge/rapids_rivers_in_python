@@ -15,6 +15,7 @@ class SampleService:
         self.information_statuses = []
         self.problem_statuses = []
         self.format_problems = []
+        self.loop_packets = []
 
     def packet(self, connection, packet, information):
         self.accepted_packets.append(packet)
@@ -26,6 +27,9 @@ class SampleService:
 
     def invalid_format(self, connection, message, problems):
         self.format_problems.append(problems)
+
+    def loop_detected(self, connection, packet):
+        self.loop_packets.append(packet)
 
 
 class DeadService(SampleService):
