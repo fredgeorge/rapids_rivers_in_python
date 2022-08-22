@@ -6,6 +6,7 @@ import json
 from datetime import datetime
 from json import JSONDecodeError
 
+from rapidsrivers.packets import constants
 from rapidsrivers.packets.errors import PacketError
 from rapidsrivers.rivers.status import Status
 
@@ -32,6 +33,10 @@ class Packet:
 
     def has(self, key):
         return not self.is_lacking(key)
+
+    def is_system(self):
+        return hash(constants.PACKET_TYPE_KEY) and \
+               self._map[constants.PACKET_TYPE_KEY] == constants.SYSTEM_PACKET_TYPE_VALUE
 
     def evaluate(self, rules):
         status = Status(self._json_string)

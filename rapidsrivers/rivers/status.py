@@ -13,6 +13,9 @@ class Status:
     def has_errors(self):
         return len(self._error_messages) > 0
 
+    def error(self, message):
+        self._error_messages.append(message)
+
     def unexpectedly_missing(self, key):
         self._error_messages.append('Required key of <{0}> is missing'.format(key))
 

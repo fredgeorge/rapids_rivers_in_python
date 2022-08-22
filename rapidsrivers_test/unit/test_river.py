@@ -50,6 +50,20 @@ class TestRiver:
         assert len(rejected_service.rejected_packets) == 1
         assert rejected_service.problem_statuses[0].has_errors() is True
 
+    def test_invalid_json(self):
+        connection = SampleRapidsConnection(2)
+        normal_service = SampleService(Rules(), is_system_service=False)
+        system_service = SampleService(Rules(), is_system_service=True)
+        connection.register(normal_service)
+        connection.register(system_service)
+        connection.publish('{')
+        assert len(normal_service.accepted_packets) == 0
+        assert len(normal_service.rejected_packets) == 0
+        assert len(system_service.accepted_packets) == 0
+        assert len(system_service.rejected_packets) == 0
+        assert len(normal_service.format_problems) == 0
+        assert len(system_service.format_problems) == 1
+
     def test_start_up_packet(self):
         connection = SampleRapidsConnection(2)
         service = SampleService(Rules())

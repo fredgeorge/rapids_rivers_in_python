@@ -5,13 +5,15 @@
 
 class SampleService:
 
-    def __init__(self, rules):
+    def __init__(self, rules, is_system_service=False):
         self.name = 'SampleService [{0}]'.format(hash(self))
         self.rules = rules
+        self.is_system_service = is_system_service
         self.accepted_packets = []
         self.rejected_packets = []
         self.information_statuses = []
         self.problem_statuses = []
+        self.format_problems = []
 
     def packet(self, connection, packet, information):
         self.accepted_packets.append(packet)
@@ -20,3 +22,6 @@ class SampleService:
     def rejected_packet(self, connection, packet, problems):
         self.rejected_packets.append(packet)
         self.problem_statuses.append(problems)
+
+    def invalid_format(self, connection, message, problems):
+        self.format_problems.append(problems)
