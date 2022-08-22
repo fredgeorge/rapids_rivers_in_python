@@ -2,6 +2,7 @@
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
 
+import sys
 import time
 from rapidsrivers.packets.errors import PacketError
 from rapidsrivers.rapids.rabbit_mq_rapids_connection import RabbitMqRapidsConnection
@@ -45,4 +46,4 @@ class Monitor:
 
 
 if __name__ == '__main__':
-    Monitor.main('localhost', 5672)
+    Monitor.main(*sys.argv[1:])

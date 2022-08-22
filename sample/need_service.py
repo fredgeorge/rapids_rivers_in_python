@@ -2,6 +2,7 @@
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
 
+import sys
 import json
 import time
 
@@ -36,4 +37,4 @@ class Need:
 
 
 if __name__ == '__main__':
-    Need.main('localhost', 5672)
+    Need.main(*sys.argv[1:])
