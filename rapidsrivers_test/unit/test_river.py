@@ -1,11 +1,12 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
+from rapidsrivers.packets.heart_beat_packet import HeartBeat
 from rapidsrivers.packets.packet import Packet
 from rapidsrivers.validation.rules import Rules
 from rapidsrivers.validation.validations import require_keys, forbid_keys
 from rapidsrivers_test.util.sample_rapids_connection import SampleRapidsConnection
-from rapidsrivers_test.util.sample_services import SampleService
+from rapidsrivers_test.util.sample_services import SampleService, DeadService
 
 
 class TestRiver:
@@ -69,3 +70,18 @@ class TestRiver:
         service = SampleService(Rules())
         connection.register(service)
         assert len(connection.all_packets) == 1
+
+    def test_heart_beats(self):
+        connection = SampleRapidsConnection(2)
+        normal_service = SampleService(Rules(), is_system_service=False)
+        dead_service = DeadService()
+        system_service = SampleService(Rules(), is_system_service=True)
+        connection.register(normal_service)
+        connection.register(dead_service)
+        connection.register(system_service)
+        heart_beat = HeartBeat()
+        connection.publish(heart_beat)
+        assert len(system_service.accepted_packets) == 3  # HeatBeat with only 2 responses
+        connection.publish(heart_beat)
+        connection.publish(heart_beat)
+        assert len(system_service.accepted_packets) == 9  # 3 HeartBeat's with 2 responses each

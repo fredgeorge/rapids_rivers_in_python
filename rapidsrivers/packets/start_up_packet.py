@@ -3,7 +3,7 @@
 # Licensed under the MIT License; see LICENSE file in root.
 
 import json
-from rapidsrivers.packets.errors import PacketError
+
 from rapidsrivers.packets.constants import *
 
 

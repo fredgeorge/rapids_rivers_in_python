@@ -1,6 +1,7 @@
 # Copyright (c) 2022 by Fred George
 # @author Fred George  fredgeorge@acm.org
 # Licensed under the MIT License; see LICENSE file in root.
+from rapidsrivers.validation.rules import Rules
 
 
 class SampleService:
@@ -25,3 +26,15 @@ class SampleService:
 
     def invalid_format(self, connection, message, problems):
         self.format_problems.append(problems)
+
+
+class DeadService(SampleService):
+
+    def __init__(self):
+        super().__init__(Rules())
+
+    @staticmethod
+    def is_still_alive(connection):
+        return False
+
+

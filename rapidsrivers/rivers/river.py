@@ -25,6 +25,8 @@ class River:
     def message(self, connection, message):
         try:
             packet = Packet(message)
+            if packet.is_heart_beat():
+                self._trigger_heart_beat_response(connection, packet)
             status = packet.evaluate(self._rules)
             listeners = self._system_listeners if packet.is_system() else self._listeners
             if status.has_errors():
@@ -34,11 +36,13 @@ class River:
         except PacketError as err:
             self._trigger_invalid_format(connection, message, err)
 
-    def _trigger_accepted_packet(self, listeners, connection, packet, status):
+    @staticmethod
+    def _trigger_accepted_packet(listeners, connection, packet, status):
         for service in listeners:
             service.packet(connection, packet, status)
 
-    def _trigger_rejected_packet(self, listeners, connection, packet, status):
+    @staticmethod
+    def _trigger_rejected_packet(listeners, connection, packet, status):
         for service in listeners:
             if hasattr(service, 'rejected_packet'):
                 service.rejected_packet(connection, packet, status)
@@ -49,3 +53,8 @@ class River:
         for service in self._system_listeners:
             if hasattr(service, 'invalid_format'):
                 service.invalid_format(connection, message, status)
+
+    def _trigger_heart_beat_response(self, connection, packet):
+        for service in self._listeners:
+            if not hasattr(service, 'is_still_alive') or service.is_still_alive(connection) is True:
+                connection.publish(packet.to_heart_beat_response(service))
