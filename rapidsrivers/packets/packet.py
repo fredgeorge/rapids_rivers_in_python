@@ -14,7 +14,7 @@ from rapidsrivers.rivers.status import Status
 
 class Packet:
     def __init__(self, raw_json_string):
-        self._json_string = raw_json_string
+        self._json_string = raw_json_string.decode("utf-8")
         try:
             self._map = json.loads(raw_json_string)
         except JSONDecodeError:
