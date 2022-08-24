@@ -28,7 +28,8 @@ class RabbitMqRapidsConnection:
 
     def register(self, service):
         validate_service(service)
-        self._river = River(self, service.rules, self.DEFAULT_MAXIMUM_READ_COUNT)  # No sharing of Rivers in this implementation
+        # No sharing of Rivers in this implementation
+        self._river = River(self, service.rules, self.DEFAULT_MAXIMUM_READ_COUNT)
         queue_name = service.name  # queue name can be same as service name in this implementation
         self._river.register(service)
         self._configure_queue_as_river(queue_name)
