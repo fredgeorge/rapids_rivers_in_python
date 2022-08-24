@@ -51,7 +51,7 @@ class RabbitMqRapidsConnection:
     def _consume_messages(self, queue_name):
         # noinspection PyUnusedLocal
         def callback(ch, method, properties, body):  # required signature for callback
-            self._river.message(self, body)
+            self._river.message(self, body.decode("utf-8"))
         self._channel.basic_consume(
             queue=queue_name,
             on_message_callback=callback,
