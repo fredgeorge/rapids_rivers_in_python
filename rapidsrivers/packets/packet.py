@@ -18,7 +18,7 @@ class Packet:
         try:
             self._map = json.loads(raw_json_string)
         except JSONDecodeError:
-            raise PacketError('message')
+            raise PacketError('JSON decoding failed. Failing message:\n\t\t{0}'.format(raw_json_string))
 
     @staticmethod
     def empty():
